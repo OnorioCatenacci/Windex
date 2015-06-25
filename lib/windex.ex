@@ -1,0 +1,2 @@
+defmodule Windex do
+end
