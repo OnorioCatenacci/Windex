@@ -23,37 +23,61 @@ Date: 25 June 2015
 Add-Type @'
 public class option
 {
-    public string optionName;    
-    public string additionalParams;
-    public string optionDescription;
+    public string Description;
+    public string Name;    
+    public string AdditionalArgs;
+    public string MultipleArgs;
 }
 '@
 
 $versionOption = New-Object option
-$versionOption.optionName = "v"
-$versionOption.additionalParams = ""
-$versionOption.optionDescription = "Prints version and exit"
+$versionOption.Name = "-v"
+$versionOption.AdditionalArgs = ""
+$versionOption.Description = "Prints version and exit"
+$versionOption.MultipleArgs = "No"
+
+$evaluateOption = New-Object option
+$evaluateOption.Name = "-e"
+$evaluateOption.AdditionalArgs = "command"
+$evaluateOption.Description = "Evaluates the given command"
+$evaluateOption.MultipleArgs = "Yes"
+
+$requireOption = New-Object option
+$requireOption.Name = "-r"
+$requireOption.AdditionalArgs = "file"
+$requireOption.Description = "Requires the given files/patterns"
+$requireOption.MultipleArgs = "Yes"
 
 $scriptOption = New-Object option
-$scriptOption.optionName = "S"
-$scriptOption.additionalParams = "ScriptName"
-$scriptOption.optionDescription = "Runs the specified script"
+$scriptOption.Name = "-S"
+$scriptOption.additionalArgs = "Script"
+$scriptOption.Description = "Runs the specified script"
+$scriptOption.MultipleArgs = "No"
 
-[option[]] $optionArray = $versionOption, $scriptOption
+$pRequireOption = New-Object option
+$pRequireOption.Name = "-pr"
+$pRequireOption.AdditionalArgs = "file"
+$pRequireOption.Description = "Requires the given files/patterns in parallel"
+$pRequireOption.MultipleArgs = "Yes"
 
+[option[]] $optionArray = $versionOption, $evaluateOption, $requireOption, $scriptOption, $pRequireOption
 
-
-Function DisplayHelp
+function DisplayHelp
 {
-    $scriptName = split-path $MyInvocation.PSCommandPath -Leaf
-    Write-Host $scriptName
-    Write-Host "Usage:"
+    $scriptName = GetScriptName
+    Write-Output $scriptName
+    Write-Output "Usage:"
     foreach ($option in $optionArray)
     {
-        Write-Host $option.optionName,  $option.additionalParams,  $option.optionDescription
+        Write-Output $option
     }
 }
-    
+
+function GetScriptName
+{
+    split-path $MyInvocation.PSCommandPath -Leaf
+}
+
 if ($args.Count -eq 0)
 {
     DisplayHelp
