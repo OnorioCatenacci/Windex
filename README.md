@@ -1,4 +1,4 @@
-Windex
-======
+# Windex
+Elixir utilities and things specific to Windows
 
-** TODO: Add description **
+Working on rewriting .bat files into Powershell scripts among other changes.
